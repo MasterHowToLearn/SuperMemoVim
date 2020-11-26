@@ -1,6 +1,6 @@
 # SuperMemoVim: Learning By Editing at the Speed of Thought
 
-![logo](https://raw.githubusercontent.com/MasterHowToLearn/SuperMemoVim/main/images/supermemovim.png "logo")
+![logo](https://raw.githubusercontent.com/MasterHowToLearn/SuperMemoVim/master/images/supermemovim.png "logo")
 
 Vim emulator customized for SuperMemo, the best learning software in the world. This is my implementation with many custom scripts for SuperMemo. For demo and accompaning article please see [SuperMemoVim: Learning By Editing at the Speed of Thought](https://www.masterhowtolearn.com/2020-05-05-supermemovim-learning-by-editing-at-the-speed-of-thought/).
 
