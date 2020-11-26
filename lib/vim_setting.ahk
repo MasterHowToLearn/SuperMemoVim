@@ -5,9 +5,9 @@
   }
 
   MakeGui(){
-    global VimRestoreIME, VimJJ, VimEscNormal, VimSendEscNormal, VimLongEscNormal, VimCtrlBracketToEsc, VimCtrlBracketNormal, VimSendCtrlBracketNormal, VimLongCtrlBracketNormal
-    global VimDisableUnused, VimSetTitleMatchMode, VimSetTitleMatchModeFS, VimIconCheckInterval, VimVerbose, VimGroup, VimGroupList, VimTwoLetterList
-    global VimDisableUnusedText, VimSetTitleMatchModeText, VimIconCheckIntervalText, VimIconCheckIntervalEdit, VimVerboseText, VimGroupText, VimHomepage, VimSettingOK, VimSettingReset, VimSettingCancel, VimTwoLetterText
+    global VimRestoreIME, VimJJ, VimJK, VimSD
+    global VimDisableUnused, VimSetTitleMatchMode, VimSetTitleMatchModeFS, VimIconCheckInterval, VimVerbose, VimGroup, VimGroupList
+    global VimDisableUnusedText, VimSetTitleMatchModeText, VimIconCheckIntervalText, VimIconCheckIntervalEdit, VimVerboseText, VimGroupText, VimHomepage, VimSettingOK, VimSettingReset, VimSettingCancel
     this.VimVal2V()
     Gui, % this.Hwnd ":-MinimizeBox"
     Gui, % this.Hwnd ":-Resize"
@@ -18,19 +18,12 @@
       }else{
         y := "Y+10"
       }
-      if(inStr(k, "Long") or inStr(k, "Send")) {
-        x := "30"
-      }else{
-        x := "10"
-      }
-      Gui, % this.Hwnd ":Add", Checkbox, % "+HwndHwnd" k " XM+" x " " y " v" k, % this.Vim.Conf[k]["description"]
+      Gui, % this.Hwnd ":Add", Checkbox, % "+HwndHwnd" k " XM+10 " y " v" k, % this.Vim.Conf[k]["description"]
       hwnd := "Hwnd" k
       this.HwndAll.Push(%hwnd%)
       created  := 1
       GuiControl, % this.Hwnd ":", % k, % %k%
     }
-    Gui, % this.Hwnd ":Add", Text, % "XM+10 Y+15 g" this.__Class ".TwoLetterText vVimTwoLetterText", % this.Vim.Conf["VimTwoLetter"]["description"]
-    Gui, % this.Hwnd ":Add", Edit, XM+10 Y+5 R4 W100 Multi vVimTwoLetterList, % VimTwoLetterList
     Gui, % this.Hwnd ":Add", Text, % "XM+10 Y+15 g" this.__Class ".DisableUnusedText vVimDisableUnusedText", % this.Vim.Conf["VimDisableUnused"]["description"]
     Gui, % this.Hwnd ":Add", DropDownList, % "+HwndHwndDisableUnused X+5 Y+-16 W30 vVimDisableUnused Choose" VimDisableUnused, 1|2|3
     this.HwndAll.Push(HwndDisableUnused)
@@ -91,12 +84,11 @@
   }
 
   UpdateGuiValue(){
-    global VimRestoreIME, VimJJ, VimEscNormal, VimSendEscNormal, VimLongEscNormal, VimCtrlBracketToEsc, VimCtrlBracketNormal, VimSendCtrlBracketNormal, VimLongCtrlBracketNormal
-    global VimDisableUnused, VimSetTitleMatchMode, VimSetTitleMatchModeFS, VimIconCheckInterval, VimVerbose, VimGroup, VimGroupList, VimTwoLetter, VimTwoLetterList
+    global VimRestoreIME, VimJJ, VimJK, VimSD
+    global VimDisableUnused, VimSetTitleMatchMode, VimSetTitleMatchModeFS, VimIconCheckInterval, VimVerbose, VimGroup, VimGroupList
     for i, k in this.Vim.Checkboxes {
       GuiControl, % this.Hwnd ":", % k, % %k%
     }
-    GuiControl, % this.Hwnd ":", VimTwoLetterList, % VimTwoLetterList
     GuiControl, % this.Hwnd ":Choose", VimDisableUnused, % VimDisableUnused
     GuiControl, % this.Hwnd ":", VimIconCheckInterval, % VimIconCheckInterval
     if(VimSetTitleMatchMode == "RegEx"){
@@ -119,9 +111,6 @@
   DisableUnusedText(){
   }
 
-  TwoLetterText(){
-  }
-
   SetTitleMatchModeText(){
   }
 
@@ -135,52 +124,45 @@
   }
 
   VimV2Conf(){
-    global VimRestoreIME, VimJJ, VimEscNormal, VimSendEscNormal, VimLongEscNormal, VimCtrlBracketToEsc, VimCtrlBracketNormal, VimSendCtrlBracketNormal, VimLongCtrlBracketNormal
-    global VimDisableUnused, VimSetTitleMatchMode, VimSetTitleMatchModeFS, VimIconCheckInterval, VimVerbose, VimGroup, VimGroupList, VimTwoLetter, VimTwoLetterList
-    VimGroup := this.VimParseList(VimGroupList)
-    VimTwoLetter := this.VimParseList(VimTwoLetterList)
+    global VimRestoreIME, VimJJ, VimJK, VimSD
+    global VimDisableUnused, VimSetTitleMatchMode, VimSetTitleMatchModeFS, VimIconCheckInterval, VimVerbose, VimGroup, VimGroupList
+    VimGroup := ""
+    tmpArray := []
+    Loop, Parse, VimGroupList, `n
+    {
+      if(! tmpArray.Haskey(A_LoopField)){
+        tmpArray.push(A_LoopField)
+        if(VimGroup == ""){
+          VimGroup := A_LoopField
+        }else{
+          VimGroup := VimGroup . this.Vim.GroupDel . A_LoopField
+        }
+      }
+    }
     for k, v in this.Vim.Conf {
       v["val"] := %k%
     }
   }
 
-  VimParseList(list){
-    result := ""
-    tmpArray := []
-    Loop, Parse, list, `n
-    {
-      if(! tmpArray.Haskey(A_LoopField)){
-        tmpArray.push(A_LoopField)
-        if(result == ""){
-          result := A_LoopField
-        }else{
-          result := result this.Vim.GroupDel A_LoopField
-        }
-      }
-    }
-    return result
-  }
-
   VimConf2V(vd){
-    global VimRestoreIME, VimJJ, VimEscNormal, VimSendEscNormal, VimLongEscNormal, VimCtrlBracketToEsc, VimCtrlBracketNormal, VimSendCtrlBracketNormal, VimLongCtrlBracketNormal
-    global VimDisableUnused, VimSetTitleMatchMode, VimSetTitleMatchModeFS, VimIconCheckInterval, VimVerbose, VimGroup, VimGroupList, VimTwoLetterList
+    global VimRestoreIME, VimJJ, VimJK, VimSD
+    global VimDisableUnused, VimSetTitleMatchMode, VimSetTitleMatchModeFS, VimIconCheckInterval, VimVerbose, VimGroup, VimGroupList
     StringReplace, VimGroupList, % this.Vim.Conf["VimGroup"][vd], % this.Vim.GroupDel, `n, All
-    StringReplace, VimTwoLetterList, % this.Vim.Conf["VimTwoLetter"][vd], % this.Vim.GroupDel, `n, All
     for k, v in this.Vim.Conf {
       %k% := v[vd]
     }
   }
 
   VimVal2V(){
-    this.VimConf2V("val")
+    this.vimConf2V("val")
   }
 
   VimDefault2V(){
-    this.VimConf2V("default")
+    this.vimConf2V("default")
   }
 
   OK(){
-    Gui, % this.Hwnd ":Submit"
+    Gui, % this.Hwnd . ":Submit"
     this.VimV2Conf()
     this.Vim.Setup()
     this.vim.Ini.WriteIni()

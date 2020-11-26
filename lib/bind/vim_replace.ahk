@@ -1,6 +1,6 @@
-﻿#If WinActive("ahk_group " . Vim.GroupName) and (Vim.State.Mode == "Vim_Normal")
-r::Vim.State.SetMode("r_once")
-+r::Vim.State.SetMode("r_repeat")
+﻿; #If WinActive("ahk_group " . Vim.GroupName) and (Vim.State.Mode == "Vim_Normalsdfwefef")
+; r::Vim.State.SetMode("r_once")
+; +r::Vim.State.SetMode("r_repeat")
 
 #If WinActive("ahk_group " . Vim.GroupName) and (Vim.State.Mode == "r_once")
 ~a::
@@ -94,17 +94,18 @@ r::Vim.State.SetMode("r_once")
 ~<::
 ~.::
 ~>::
-~Space::
-  Send, {Del}
-  Vim.State.SetMode("Vim_Normal")
-Return
 
-::: ; ":" can't be used with "~"?
-  Send, {:}{Del}
-  Vim.State.SetMode("Vim_Normal")
-Return
+; ~Space::
+;  Send, {Del}
+;  Vim.State.SetMode("Vim_Normal")
+;Return
 
-#If WinActive("ahk_group " . Vim.GroupName) and (Vim.State.Mode == "r_repeat")
+; ::: ; ":" can't be used with "~"?
+;  Send, {:}{Del}
+;  Vim.State.SetMode("Vim_Normal")
+; Return
+
+#If WinActive("ahk_group " . Vim.GroupName) and (Vim.State.Mode == "r_repeatsdfoijsdfiojererererer")
 ~a::
 ~+a::
 ~b::
@@ -196,10 +197,9 @@ Return
 ~<::
 ~.::
 ~>::
-~Space::
-  Send, {Del}
-Return
 
-:::
-  Send, {:}{Del}
+; ~Space::
+; Return
+
+; :::
 Return

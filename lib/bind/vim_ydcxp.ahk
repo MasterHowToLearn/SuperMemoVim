@@ -1,61 +1,92 @@
-﻿#If WinActive("ahk_group " . Vim.GroupName) and (Vim.State.Mode == "Vim_Normal")
-y::Vim.State.SetMode("Vim_ydc_y", 0, -1, 0)
-d::Vim.State.SetMode("Vim_ydc_d", 0, -1, 0)
-c::Vim.State.SetMode("Vim_ydc_c", 0, -1, 0)
-+y::
-  Vim.State.SetMode("Vim_ydc_y", 0, 0, 1)
-  Sleep, 150 ; Need to wait (For variable change?)
-  if WinActive("ahk_group VimDoubleHomeGroup"){
-    Send, {Home}
-  }
-  Send, {Home}+{End}
-  if not WinActive("ahk_group VimLBSelectGroup"){
-    Vim.Move.Move("l")
-  }else{
-    Vim.Move.Move("")
-  }
-  Send, {Left}{Home}
-Return
-
-+d::
-  Vim.State.SetMode("Vim_ydc_d", 0, 0, 0)
-  if not WinActive("ahk_group VimLBSelectGroup"){
-    Vim.Move.Move("$")
-  }else{
-    Send, {Shift Down}{End}{Left}
-    Vim.Move.Move("")
-  }
-Return
-
-+c::
-  Vim.State.SetMode("Vim_ydc_c",0,0,0)
-  if not WinActive("ahk_group VimLBSelectGroup"){
-    Vim.Move.Move("$")
-  }else{
-    Send, {Shift Down}{End}{Left}
-    Vim.Move.Move("")
-  }
-Return
-
-#If WinActive("ahk_group " . Vim.GroupName) and (Vim.State.Mode == "Vim_ydc_y")
-y::
-  Vim.Move.YDCMove()
-  Send, {Left}{Home}
-Return
-
-#If WinActive("ahk_group " . Vim.GroupName) and (Vim.State.Mode == "Vim_ydc_d")
-d::Vim.Move.YDCMove()
-
-#If WinActive("ahk_group " . Vim.GroupName) and (Vim.State.Mode == "Vim_ydc_c")
-c::Vim.Move.YDCMove()
+﻿;;;;;;;; NO ACTIVE TRIGGERS
 
 #If WinActive("ahk_group " . Vim.GroupName) and (Vim.State.Mode == "Vim_Normal")
-x::Send, {Delete}
-+x::Send, {BS}
+; y::Vim.State.SetMode("Vim_ydc_y", 0, -1, 0)
+; d::Vim.State.SetMode("Vim_ydc_d", 0, -1, 0)
+; c::Vim.State.SetMode("Vim_ydc_c", 0, -1, 0)
+
+; +y::
+;  Vim.State.SetMode("Vim_ydc_y", 0, 0, 1)
+;  Sleep, 150 ; Need to wait (For variable change?)
+;  if WinActive("ahk_group VimDoubleHomeGroup"){
+;    Send, {Home}
+;  }
+;  Send, {Home}+{End}
+;  if not WinActive("ahk_group VimLBSelectGroup"){
+;    Vim.Move.Move("l")
+;  }else{
+;    Vim.Move.Move("")
+;  }
+;  Send, {Left}{Home}
+; Return
+
+; +d::
+;  Vim.State.SetMode("Vim_ydc_d", 0, 0, 0)
+;  if not WinActive("ahk_group VimLBSelectGroup"){
+;    Vim.Move.Move("$")
+;  }else{
+;    Send, {Shift Down}{End}{Left}
+;    Vim.Move.Move("")
+;  }
+; Return
+
+; +c::
+;  Vim.State.SetMode("Vim_ydc_c",0,0,0)
+;  if not WinActive("ahk_group VimLBSelectGroup"){
+;    Vim.Move.Move("$")
+;  }else{
+;    Send, {Shift Down}{End}{Left}
+;    Vim.Move.Move("")
+;  }
+; Return
+
+; #If WinActive("ahk_group " . Vim.GroupName) and (Vim.State.Mode == "Vim_ydc_y")
+; y::
+;  Vim.State.LineCopy := 1
+;  if WinActive("ahk_group VimDoubleHomeGroup"){
+;    Send, {Home}
+;  }
+;  Send, {Home}+{End}
+;  if not WinActive("ahk_group VimLBSelectGroup"){
+;    Vim.Move.Move("l")
+;  }else{
+;    Vim.Move.Move("")
+;  }
+;  Send, {Left}{Home}
+; Return
+
+; #If WinActive("ahk_group " . Vim.GroupName) and (Vim.State.Mode == "Vim_ydc_d")
+; d::
+;  Vim.State.LineCopy := 1
+;  if WinActive("ahk_group DoubleHome"){
+;    Send, {Home}
+;  }
+;  Send, {Home}+{End}
+;  if not WinActive("ahk_group VimLBSelectGroup"){
+;    Vim.Move.Move("l")
+;  }else{
+;    Vim.Move.Move("")
+;  }
+; Return
+
+; #If WinActive("ahk_group " . Vim.GroupName) and (Vim.State.Mode == "Vim_ydc_c")
+; c::
+;  Vim.State.LineCopy := 1
+;  if WinActive("ahk_group DoubleHome"){
+;    Send, {Home}
+;  }
+;  Send, {Home}+{End}
+;  if not WinActive("ahk_group VimLBSelectGroup"){
+;    Vim.Move.Move("l")
+;  }else{
+;    Vim.Move.Move("")
+;  }
+; Return
+
 
 ; Paste
-#If WinActive("ahk_group " . Vim.GroupName) and (Vim.State.Mode == "Vim_Normal")
-p::
+; #If WinActive("ahk_group " . Vim.GroupName) and (Vim.State.Mode == "Vim_Normal")
+; p::
   ;i:=0
   ;;Send, {p Up}
   ;Loop {
@@ -82,28 +113,24 @@ p::
   ;  i+=1
   ;  break
   ;}
-  if(Vim.State.LineCopy == 1){
-    if WinActive("ahk_group VimNoLBCopyGroup"){
-      Send, {End}{Enter}^v{Home}
-    }else{
-      Send, {End}{Enter}^v{BS}{Home}
-    }
-  }else{
-    Send, {Right}
-    Send, ^v
-    ;Sleep, 1000
-    Send, {Left}
-    ;;Send, ^{Left}
-  }
-  KeyWait, p ; To avoid repeat, somehow it calls <C-p>, print...
-Return
+;  if(Vim.State.LineCopy == 1){
+;    Send, {End}{Enter}^v{BS}{Home}
+;  }else{
+;    Send, {Right}
+;    Send, ^v
+;    Sleep, 1000
+;    Send, {Left}
+;    Send, ^{Left}
+;  }
+;  KeyWait, p ; To avoid repeat
+; Return
 
-+p::
-  if(Vim.State.LineCopy == 1){
-    Send, {Up}{End}{Enter}^v{BS}{Home}
-  }else{
-    Send, ^v
-    ;Send,^{Left}
-  }
-  KeyWait, p
-Return
+; +p::
+;  if(Vim.State.LineCopy == 1){
+;    Send, {Up}{End}{Enter}^v{BS}{Home}
+;  }else{
+;    Send, ^v
+;    ;Send,^{Left}
+;  }
+;  KeyWait, p
+; Return

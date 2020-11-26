@@ -82,54 +82,6 @@
     this.SetMode("Vim_Normal")
   }
 
-  HandleEsc(){
-    global Vim, VimEscNormal, vimSendEscNormal, VimLongEscNormal
-    if (!VimEscNormal) {
-      Send, {Esc}
-      Return
-    }
-    ; The keywait waits for esc to be released. If it doesn't detect a release
-    ; within the time limit, sets ErrorLevel to 1.
-    KeyWait, Esc, T0.5
-    LongPress := ErrorLevel
-    both := VimLongEscNormal && LongPress
-    neither := !(VimLongEscNormal || LongPress)
-    SetNormal :=  both or neither
-    if (!SetNormal or (VimSendEscNormal && Vim.State.Mode == "Vim_Normal")) {
-      Send, {Esc}
-    }
-    if (SetNormal) {
-      Vim.State.SetNormal()
-    }
-    if (LongPress){
-      ; Have to ensure the key has been released, otherwise this will get
-      ; triggered again.
-      KeyWait, Esc
-    }
-  }
-
-  HandleCtrlBracket(){
-    global Vim, VimCtrlBracketNormal, VimSendCtrlBracketNormal, VimLongCtrlBracketNormal
-    if (!VimCtrlBracketNormal) {
-      Send, ^[
-      Return
-    }
-    KeyWait, [, T0.5
-    LongPress := ErrorLevel
-    both := VimLongCtrlBracketNormal && LongPress
-    neither := !(VimLongCtrlBracketNormal || LongPress)
-    SetNormal :=  both or neither
-    if (!SetNormal or (VimSendCtrlBracketNormal && Vim.State.Mode == "Vim_Normal")) {
-      Send, ^[
-    }
-    if (SetNormal) {
-      Vim.State.SetNormal()
-    }
-    if (LongPress){
-      KeyWait, [
-    }
-  }
-
   IsCurrentVimMode(mode){
     this.CheckValidMode(mode)
     Return (mode == this.Mode)
@@ -140,13 +92,13 @@
     Return (inStr(this.Mode, mode))
   }
 
-  CheckValidMode(mode, fullMatch=true){
+  CheckValidMode(Mode, FullMatch=true){
     if(this.CheckModeValue == false){
       Return
     }
     try{
-      InOrBlank:= (not fullMatch) ? "in " : ""
-      if not this.HasValue(this.PossibleVimModes, mode, fullMatch){
+      InOrBlank:= (not full_match) ? "in " : ""
+      if not this.HasValue(this.PossibleVimModes, Mode, FullMatch){
         throw Exception("Invalid mode specified",-2,
         (Join
   "'" Mode "' is not " InOrBlank " a valid mode as defined by the VimPossibleVimModes
@@ -160,15 +112,15 @@
     }
   }
 
-  HasValue(haystack, needle, fullMatch=true){
+  HasValue(haystack, needle, full_match = true){
     if(!isObject(haystack)){
       return false
-    }else if(haystack.Length() == 0){
+    }else if(haystack.Length()==0){
       return false
     }
     for index, value in haystack{
-      if fullMatch{
-        if (value == needle){
+      if full_match{
+        if (value==needle){
           return true
         }
       }else{

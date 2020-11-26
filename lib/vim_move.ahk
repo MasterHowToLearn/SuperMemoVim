@@ -1,106 +1,16 @@
 ﻿class VimMove{
   __New(vim){
     this.Vim := vim
-    this.shift := 0
   }
 
-  MoveInitialize(key=""){
-    this.shift := 0
+  Move(key=""){
+    shift = 0
     if(this.Vim.State.StrIsInCurrentVimMode("Visual") or this.Vim.State.StrIsInCurrentVimMode("ydc")){
-      this.shift := 1
+      shift := 1
+    }
+    if(shift == 1){
       Send, {Shift Down}
     }
-
-    if(this.Vim.State.Mode == "Vim_VisualLineFirst") and (key == "k" or key == "^u" or key == "^b" or key == "g"){
-      Send, {Shift Up}{End}
-      this.Home()
-      Send, {Shift Down}
-      this.Up()
-      this.vim.state.setmode("Vim_VisualLine")
-    }
-
-    if(this.Vim.State.Mode == "Vim_VisualLineFirst") and (key == "j" or key == "^d" or key == "^f" or key == "+g"){
-      this.vim.state.setmode("Vim_VisualLine")
-    }
-
-    if(this.Vim.State.StrIsInCurrentVimMode("Vim_ydc")) and (key == "k" or key == "^u" or key == "^b" or key == "g"){
-      this.Vim.State.LineCopy := 1
-      Send,{Shift Up}
-      this.Home()
-      this.Down()
-      Send, {Shift Down}
-      this.Up()
-    }
-    if(this.Vim.State.StrIsInCurrentVimMode("Vim_ydc")) and (key == "j" or key == "^d" or key == "^f" or key == "+g"){
-      this.Vim.State.LineCopy := 1
-      Send,{Shift Up}
-      this.Home()
-      Send, {Shift Down}
-      this.Down()
-    }
-  }
-
-  MoveFinalize(){
-    Send,{Shift Up}
-    ydc_y := false
-    if(this.Vim.State.Mode == "Vim_ydc_y"){
-      Clipboard :=
-      Send, ^c
-      ClipWait, 1
-      this.Vim.State.SetMode("Vim_Normal")
-      ydc_y := true
-    }else if(this.Vim.State.Mode == "Vim_ydc_d"){
-      Clipboard :=
-      Send, ^x
-      ClipWait, 1
-      this.Vim.State.SetMode("Vim_Normal")
-    }else if(this.Vim.State.Mode == "Vim_ydc_c"){
-      Clipboard :=
-      Send, ^x
-      ClipWait, 1
-      this.Vim.State.SetMode("Insert")
-    }
-    this.Vim.State.SetMode("", 0, 0)
-    if(ydc_y){
-      Send, {Left}{Right}
-    }
-    ; Sometimes, when using `c`, the control key would be stuck down afterwards.
-    ; This forces it to be up again afterwards.
-    send {Ctrl Up}
-  }
-
-  Home(){
-    if WinActive("ahk_group VimDoubleHomeGroup"){
-      Send, {Home}
-    }
-    Send, {Home}
-  }
-
-  Up(n=1){
-    Loop, %n% {
-      if WinActive("ahk_group VimCtrlUpDownGroup"){
-        Send ^{Up}
-      } else {
-        Send,{Up}
-      }
-    }
-  }
-
-  Down(n=1){
-    Loop, %n% {
-      if WinActive("ahk_group VimCtrlUpDownGroup"){
-        Send ^{Down}
-      } else {
-        Send,{Down}
-      }
-    }
-  }
-
-  Move(key="", repeat=false){
-    if(!repeat){
-      this.MoveInitialize(key)
-    }
-
     ; Left/Right
     if(not this.Vim.State.StrIsInCurrentVimMode("Line")){
       ; For some cases, need '+' directly to continue to select
@@ -114,21 +24,21 @@
         Send, {Right}
       ; Home/End
       }else if(key == "0"){
-        this.Home()
+        Send, {Home}
       }else if(key == "$"){
-        if(this.shift == 1){
+        if(shift == 1){
           Send, +{End}
         }else{
           Send, {End}
         }
       }else if(key == "^"){
-        if(this.shift == 1){
+        if(shift == 1){
           if WinActive("ahk_group VimCaretMove"){
-            this.Home()
+            Send, {Home}
             Send, ^{Right}
             Send, ^{Left}
           }else{
-            this.Home()
+            Send, {Home}
           }
         }else{
           if WinActive("ahk_group VimCaretMove"){
@@ -141,69 +51,89 @@
         }
       ; Words
       }else if(key == "w"){
-        if(this.shift == 1){
+        if(shift == 1){
           Send, +^{Right}
         }else{
           Send, ^{Right}
         }
       }else if(key == "b"){
-        if(this.shift == 1){
+        if(shift == 1){
           Send, +^{Left}
         }else{
           Send, ^{Left}
         }
       }
     }
-    ; Up/Down 1 character
+    ; Up/Down
+    if(this.Vim.State.Mode == "Vim_VisualLineFirst") and (key == "k" or key == "^u" or key == "^b" or key == "g"){
+      Send, {Shift Up}{End}{Home}{Shift Down}{Up}
+      this.Vim.State.SetMode("Vim_VisualLine")
+    }
+    if(this.Vim.State.StrIsInCurrentVimMode("Vim_ydc")) and (key == "k" or key == "^u" or key == "^b" or key == "g"){
+      this.Vim.State.LineCopy := 1
+      Send,{Shift Up}{Home}{Down}{Shift Down}{Up}
+    }
+    if(this.Vim.State.StrIsInCurrentVimMode("Vim_ydc")) and (key == "j" or key == "^d" or key == "^f" or key == "+g"){
+      this.Vim.State.LineCopy := 1
+      Send,{Shift Up}{Home}{Shift Down}{Down}
+    }
+
+    ; 1 character
     if(key == "j"){
-      this.Down()
+      ; Only for OneNote of less than windows 10?
+      if WinActive("ahk_group VimOneNoteGroup"){
+        Send ^{Down}
+      } else {
+        Send,{Down}
+      }
     }else if(key="k"){
-      this.Up()
+      if WinActive("ahk_group VimOneNoteGroup"){
+        Send ^{Up}
+      }else{
+        Send,{Up}
+      }
     ; Page Up/Down
-    n := 10
     }else if(key == "^u"){
-      this.Up(10)
+      Send, {Up 10}
     }else if(key == "^d"){
-      this.Down(10)
+      Send, {Down 10}
     }else if(key == "^b"){
       Send, {PgUp}
     }else if(key == "^f"){
-      Send, {PgDn}
+      Send, {WheelDown 1} ;; modified from {PgDn} to {WheelDown 1}
     }else if(key == "g"){
       Send, ^{Home}
     }else if(key == "+g"){
+      ;Send, ^{End}{Home}
       Send, ^{End}
     }
+    Send,{Shift Up}
 
-    if(!repeat){
-      this.MoveFinalize()
+    if(this.Vim.State.Mode == "Vim_ydc_y"){
+      Clipboard :=
+      Send, ^c
+      ClipWait, 1
+      this.Vim.State.SetMode("Vim_Normal")
+    }else if(this.Vim.State.Mode == "Vim_ydc_d"){
+      Clipboard :=
+      Send, ^x
+      ClipWait, 1
+      this.Vim.State.SetMode("Vim_Normal")
+    }else if(this.Vim.State.Mode == "Vim_ydc_c"){
+      Clipboard :=
+      Send, ^x
+      ClipWait, 1
+      this.Vim.State.SetMode("Insert")
     }
+    this.Vim.State.SetMode("", 0, 0)
   }
 
   Repeat(key=""){
-    this.MoveInitialize(key)
     if(this.Vim.State.n == 0){
       this.Vim.State.n := 1
     }
     Loop, % this.Vim.State.n {
-      this.Move(key, true)
-    }
-    this.MoveFinalize()
-  }
-
-  YDCMove(){
-    this.Vim.State.LineCopy := 1
-    this.Home()
-    Send, {Shift Down}
-    if(this.Vim.State.n == 0){
-      this.Vim.State.n := 1
-    }
-    this.Down(this.Vim.State.n - 1)
-    Send, {End}
-    if not WinActive("ahk_group VimLBSelectGroup"){
-      this.Move("l")
-    }else{
-      this.Move("")
+      this.Vim.Move.Move(key)
     }
   }
 }

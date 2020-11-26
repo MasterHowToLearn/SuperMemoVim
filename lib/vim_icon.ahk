@@ -1,32 +1,28 @@
 ﻿class VimIcon{
-  __New(){
-    global VimScriptPath
-    this.icons := {Normal: VimScriptPath "\..\vim_ahk_icons\normal.ico"
-                 , Insert: VimScriptPath  "\..\vim_ahk_icons\insert.ico"
-                 , Visual: VimScriptPath "\..\vim_ahk_icons\visual.ico"
-                 , Command: VimScriptPath "\..\vim_ahk_icons\command.ico"
-                 , Disabled: VimScriptPath "\..\vim_ahk_icons\disabled.ico"
+  static Icons := {Normal: A_LineFile "\..\..\icons\normal.ico"
+                 , Insert: A_LineFile  "\..\..\icons\insert.ico"
+                 , Visual: A_LineFile "\..\..\icons\visual.ico"
+                 , Command: A_LineFile "\..\..\icons\command.ico"
+                 , Disabled: A_LineFile "\..\..\icons\disabled.ico"
                  , Default: A_AhkPath}
-  }
-
   SetIcon(Mode="", Interval=0){
     icon :=
     if (Interval == 0){
-      icon := this.icons["Default"]
+      icon := VimIcon.Icons["Default"]
     }else if InStr(Mode, "Normal"){
-      icon := this.icons["Normal"]
+      icon := VimIcon.Icons["Normal"]
     }else if InStr(Mode, "Insert"){
-      icon := this.icons["Insert"]
+      icon := VimIcon.Icons["Insert"]
     }else if InStr(Mode, "Visual"){
-      icon := this.icons["Visual"]
+      icon := VimIcon.Icons["Visual"]
     }else if InStr(Mode, "Command"){
-      icon := this.icons["Command"]
+      icon := VimIcon.Icons["Command"]
     }else if InStr(Mode, "Disabled"){
-      icon := this.icons["Disabled"]
+      icon := VimIcon.Icons["Disabled"]
     }
     if FileExist(icon){
       Menu, Tray, Icon, % icon
-      if(icon != this.icons["Default"]){
+      if(icon != VimIcon.Icons["Default"]){
         Menu, VimSubMenu, Icon, Status, % icon
       }
     }
