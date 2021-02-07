@@ -9,11 +9,11 @@ i::Vim.State.SetMode("Insert")
 Return
 
 
-; Disabled: when in normal mode, press a will move to right instead of focus Answer field
+; Disabled: when in normal mode, pressing `a` will shift to right instead of focusing Answer field
 ; a::
 ;  Send, {Right}
 ;  Vim.State.SetMode("Insert")
-;Return
+; Return
 
 
 #If WinActive("ahk_group " . Vim.GroupName) && (Vim.State.Mode == "Vim_Normal")

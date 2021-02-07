@@ -1,7 +1,7 @@
 ﻿; Utilities
 #Include %A_LineFile%\..\util\vim_ahk_setting.ahk
 #Include %A_LineFile%\..\util\vim_ime.ahk
-
+#Include %A_LineFile%\..\util\Clip.ahk
 
 ; Classes, Functions
 #Include %A_LineFile%\..\vim_about.ahk
@@ -22,7 +22,7 @@
 
 class VimAhk{
   __About(){
-    this.About.Version := "v0.0.1"
+    this.About.Version := "v0.0.2"
     this.About.Date := "28/Nov/2020"
     this.About.Author := "Modified by: MasterHowToLearn. Made by: rcmdnk. Thank you!"
     this.About.Description := "Vim emulation with AutoHotkey for SuperMemo, the best learning software in the world."

@@ -1,6 +1,6 @@
 ﻿;;;;;;;; NO ACTIVE TRIGGERS
 
-#If WinActive("ahk_group " . Vim.GroupName) and (Vim.State.Mode == "Vim_Normal")
+; #If WinActive("ahk_group " . Vim.GroupName) and (Vim.State.Mode == "Vim_Normal")
 ; y::Vim.State.SetMode("Vim_ydc_y", 0, -1, 0)
 ; d::Vim.State.SetMode("Vim_ydc_d", 0, -1, 0)
 ; c::Vim.State.SetMode("Vim_ydc_c", 0, -1, 0)

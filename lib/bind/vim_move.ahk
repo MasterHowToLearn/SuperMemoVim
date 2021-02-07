@@ -30,6 +30,6 @@ b::Vim.Move.Repeat("b")
 
 ; Page Up/Down
 ; ^u::Vim.Move.Repeat("^u")
-; ^d::Vim.Move.Repeat("^d") ; must not work
+; ^d::Vim.Move.Repeat("^d") ; clashes with trigger for dismissing item
 ; ^b::Vim.Move.Repeat("^b")
 ; ^f::Vim.Move.Repeat("^f")

@@ -1,8 +1,9 @@
 #If WinActive("ahk_group " . Vim.GroupName) and (Vim.State.Mode == "Vim_Normal")
 
-; If you disable the keys here,
-; you can use it for SuperMemoVim
-; effectively remapping original shortcuts
+; Triggers here are to disable the default SuperMemo's shortcuts
+; to avoid conflicts with SuperMemoVim
+; If your usual SuperMemo shortcut doesn't work,
+; add a ; at the beginning of line to enable it back
 
 ; All Two-key combo
 
